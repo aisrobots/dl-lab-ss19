@@ -2,7 +2,7 @@ import json, os, torch
 from torchvision import transforms
 from PIL import Image
 
-COCO_PATH = "/home/galessos/raid18/DL_Lab_SS2019/COCO/crop/"
+COCO_PATH = "/home/dllab/coco_subset/"
 
 
 class DataReader:
