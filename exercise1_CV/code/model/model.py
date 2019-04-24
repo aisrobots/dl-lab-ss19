@@ -1,15 +1,31 @@
 import torch.nn as nn
 import torchvision.models as models
+import torch.utils.model_zoo as model_zoo
+from torchvision.models.resnet import ResNet, BasicBlock, model_urls
 
+class ResNetConv(ResNet):    
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+
+        intermediate = []
+        x = self.layer1(x); intermediate.append(x)
+        x = self.layer2(x); intermediate.append(x)
+        x = self.layer3(x); intermediate.append(x)
+        
+        return x, intermediate
 
 class ResNetModel(nn.Module):
     def __init__(self, pretrained):
         super().__init__()
 
-        # base network
-        model = models.resnet18(pretrained=pretrained)
-        self.res_conv = nn.Sequential(*list(model.children())[:-3])  # discards last three layers.
-
+        # base network (resnet18)
+        self.res_conv = ResNetConv(BasicBlock, [2, 2, 2, 2])
+        if pretrained:
+            self.res_conv.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
+        
         # other network modules
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
         self.fc1 = nn.Linear(256, 512)
