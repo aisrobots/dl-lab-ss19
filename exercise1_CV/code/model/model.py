@@ -25,8 +25,6 @@ class ResNetModel(nn.Module):
 
         # base network
         self.res_conv = ResNetConv(BasicBlock, [2, 2, 2, 2])
-        if pretrained:
-            self.res_conv.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
         
         # other network modules
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
@@ -37,6 +35,9 @@ class ResNetModel(nn.Module):
         for m in self.modules():
             if isinstance(m, nn.Linear):
                 nn.init.xavier_uniform_(m.weight)
+        
+        if pretrained:
+            self.res_conv.load_state_dict(model_zoo.load_url(model_urls['resnet18']))
 
     def forward(self, inputs, filename):
         x, _ = self.res_conv(inputs)
