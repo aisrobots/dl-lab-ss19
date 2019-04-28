@@ -47,11 +47,11 @@ Training a network to complete convergence with a good GPU will take approx. 6 h
 Using the TF pool hardware is the preferred option for this exercise and therefore we give you a short summary on how to run jobs there.
 If you are not in the pool connect to the pool via ssh
 
-    ssh -X username@login.informatik.uni-freiburg.de
+    ssh username@login.informatik.uni-freiburg.de
 
 You should use the machines tfpool25-46 or tfpool53-63 as they provide the best GPUs. So connect to one of them 
     
-    ssh -X tfpoolXX
+    ssh tfpoolXX
     
 You can check the GPU status with nvidia-smi. It will tell you about which processes currently occupy the GPU.
 
