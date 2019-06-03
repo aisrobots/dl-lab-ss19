@@ -2,6 +2,10 @@ import tensorflow as tf
 import numpy as np
 from dqn.replay_buffer import ReplayBuffer
 
+def soft_update(target, source, tau):
+  for target_param, param in zip(target.parameters(), source.parameters()):
+    target_param.data.copy_(target_param.data * (1.0 - tau) + param.data * tau)
+
 class DQNAgent:
 
     def __init__(self, Q, Q_target, num_actions, gamma=0.95, batch_size=64, epsilon=0.1, tau=0.01, lr=1e-4, history_length=0):
@@ -15,7 +19,7 @@ class DQNAgent:
             num_actions: Number of actions of the environment.
             gamma: discount factor of future rewards.
             batch_size: Number of samples per batch.
-            tao: indicates the speed of adjustment of the slowly updated target network.
+            tau: indicates the speed of adjustment of the slowly updated target network.
             epsilon: Chance to sample a random action. Float betwen 0 and 1.
             lr: learning rate of the optimizer
         """
@@ -50,9 +54,8 @@ class DQNAgent:
         #       2.1 compute td targets and loss 
         #              td_target =  reward + discount * max_a Q_target(next_state_batch, a)
         #       2.2 update the Q network
-        #              self.Q.update(...)
         #       2.3 call soft update for target network
-        #              self.Q_target.update(...)
+        #           soft_update(self.Q_target, self.Q, self.tau)
    
 
     def act(self, state, deterministic):
